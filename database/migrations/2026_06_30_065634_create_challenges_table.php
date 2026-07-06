@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // FK category_id INT [cite: 59, 60]
             $table->date('start_date'); // start_date DATE [cite: 65, 66]
             $table->date('end_date'); // end_date DATE [cite: 72, 73]
-            $table->integer('remaining_lives'); // remaining_lives INT (sisa_nyawa) [cite: 77, 379]
-            $table->enum('status', ['active', 'successful', 'failed']); // status ENUM [cite: 81, 82]
-            $table->timestamps(); // created_at & updated_at TIMESTAMP [cite: 85, 86, 92, 93]
+            $table->integer('remaining_lives'); 
+            $table->enum('status', ['active', 'successful', 'failed']); 
+            $table->timestamps(); 
         });
     }
 

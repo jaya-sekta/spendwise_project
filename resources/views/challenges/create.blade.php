@@ -19,9 +19,10 @@
                 <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">Kategori Target</label>
                 <select name="category_id" id="category_id" class="block w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#185adb]/20 focus:border-[#185adb] outline-none transition @error('category_id') border-red-500 @enderror" required>
                     <option value="" disabled selected>Pilih kategori yang ingin dihemat</option>
+                    {{-- PERBAIKAN DI SINI: Menggunakan $category->category_name --}}
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
+                            {{ $category->category_name }}
                         </option>
                     @endforeach
                 </select>

@@ -45,6 +45,7 @@
             // Dummy Hadiah (karena tidak ada di DB, kita buat formula: 10 poin per hari)
             $rewardPoints = $totalDays * 10;
         @endphp
+        <div style="width: {{ $progressPercent }}%"></div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden transition hover:shadow-md">
             @if($challenge->status === 'active')
@@ -90,7 +91,7 @@
                 </div>
                 <div>
                     <p class="text-xs text-gray-400 mb-1">Kategori</p>
-                    <p class="text-xs font-semibold text-gray-700">{{ $challenge->category->name ?? '-' }}</p>
+                    <p class="text-xs font-semibold text-gray-700">{{ $challenge->category_name ?? '-' }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-400 mb-1">Nyawa</p>
@@ -110,9 +111,8 @@
                 </div>
             </div>
 
-            <div class="mt-4 flex justify-end gap-3">
-                <a href="{{ route('challenges.edit', $challenge->id) }}" class="text-xs text-gray-500 hover:text-blue-600 transition"><i class="fa-solid fa-pen"></i> Edit</a>
-                <form action="{{ route('challenges.destroy', $challenge->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus challenge ini?');">
+                <div class="mt-4 flex justify-end gap-3">
+                    <form action="{{ route('challenges.destroy', $challenge->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus challenge ini?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-xs text-gray-500 hover:text-red-600 transition"><i class="fa-solid fa-trash"></i> Hapus</button>

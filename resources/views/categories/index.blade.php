@@ -1,100 +1,101 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Kategori')
+@section('title', 'Kategori')
 
 @section('content')
-<div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-800">Daftar Kategori</h1>
-        <p class="text-gray-500 mt-1">Kelola dan kelompokkan anggaran pengeluaran Anda.</p>
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">Kategori</h1>
+        <p class="text-gray-500 text-sm mt-1">Pilih kategori bawaan atau kelola kategori milikmu sendiri.</p>
     </div>
-    <a href="{{ route('categories.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all flex items-center gap-2">
-        <i class="fa-solid fa-plus"></i> Tambah Kategori
-    </a>
-</div>
 
-{{-- Alert Sukses --}}
-@if(session('success'))
-<div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center gap-3">
-    <i class="fa-solid fa-circle-check text-lg text-emerald-500"></i>
-    <p class="text-sm font-medium">{{ session('success') }}</p>
-</div>
-@endif
-
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-    @if($categories->count() > 0)
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-slate-50 border-b border-gray-100 text-gray-400 text-xs font-bold uppercase tracking-wider">
-                        <th class="px-6 py-4">Nama Kategori</th>
-                        <th class="px-6 py-4">Tipe Kategori</th>
-                        <th class="px-6 py-4">Batas Bulanan (Limit)</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50 text-gray-700 text-sm">
-                    @foreach($categories as $category)
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="px-6 py-4 font-semibold text-gray-800">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-2.5 h-2.5 rounded-full {{ $category->category_type === 'primary' ? 'bg-blue-500' : 'bg-orange-400' }}"></div>
-                                    {{ $category->category_name }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                @if($category->category_type === 'primary')
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-600">
-                                        <i class="fa-solid fa-star text-[10px]"></i> Primer
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-orange-50 text-orange-600">
-                                        <i class="fa-solid fa-basket-shopping text-[10px]"></i> Konsumtif
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 font-medium text-gray-900">
-                                Rp {{ number_format($category->monthly_limit, 0, ',', '.') }}
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex justify-end items-center gap-2">
-                                    <a href="{{ route('categories.show', $category->id) }}" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Detail">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('categories.edit', $category->id) }}" class="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition" title="Edit">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?');" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        @if($categories->hasPages())
-            <div class="px-6 py-4 border-t border-gray-50">
-                {{ $categories->links() }}
-            </div>
-        @endif
-    @else
-        {{-- Empty State --}}
-        <div class="p-12 text-center">
-            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fa-solid fa-tags text-2xl"></i>
-            </div>
-            <h3 class="font-bold text-gray-700 text-base">Belum Ada Kategori</h3>
-            <p class="text-gray-400 text-sm mt-1 max-w-sm mx-auto">Buat kategori pengeluaran pertama Anda untuk mulai mengatur batasan budget.</p>
-            <a href="{{ route('categories.create') }}" class="mt-4 inline-flex items-center gap-2 bg-slate-100 hover:bg-blue-600 hover:text-white text-gray-600 px-4 py-2 rounded-xl text-xs font-semibold transition-all">
-                <i class="fa-solid fa-plus"></i> Buat Kategori Baru
-            </a>
+    @if(session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
         </div>
     @endif
-</div>
+
+    @php
+        $defaults = $categories->where('is_default', true);
+        $owned    = $categories->where('is_default', false);
+    @endphp
+
+    {{-- Kategori Bawaan --}}
+    <div class="mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-amber-500 text-sm"></i>
+        <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Kategori Bawaan</h2>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+        @foreach ($defaults as $category)
+            <a href="{{ route('categories.show', $category) }}"
+               class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 relative hover:shadow-md hover:border-amber-200 transition block">
+                <span class="absolute top-4 right-4 text-amber-400" title="Kategori bawaan">
+                    <i class="fa-solid fa-shield-halved text-xs"></i>
+                </span>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg mb-3"
+                     style="background-color: {{ $category->color }}1A; color: {{ $category->color }}">
+                    <i class="{{ $category->icon }}"></i>
+                </div>
+                <p class="font-semibold text-gray-800 text-sm pr-4">{{ $category->category_name }}</p>
+                <p class="text-xs text-gray-400 mt-1 line-clamp-2">{{ $category->description }}</p>
+            </a>
+        @endforeach
+    </div>
+
+    {{-- Kategori Saya --}}
+    <div class="mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-user text-indigo-500 text-sm"></i>
+        <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Kategori Saya</h2>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        @foreach ($owned as $category)
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 relative hover:shadow-md transition group">
+                <span class="absolute top-4 right-4 text-indigo-400" title="Kategori milik saya">
+                    <i class="fa-solid fa-user text-xs"></i>
+                </span>
+
+                <a href="{{ route('categories.show', $category) }}" class="block">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg mb-3"
+                         style="background-color: {{ $category->color }}1A; color: {{ $category->color }}">
+                        <i class="{{ $category->icon }}"></i>
+                    </div>
+                    <p class="font-semibold text-gray-800 text-sm pr-4">{{ $category->category_name }}</p>
+                    <p class="text-xs text-gray-400 mt-1 line-clamp-2">{{ $category->description }}</p>
+                </a>
+
+                <div class="mt-4 pt-3 border-t border-gray-50 flex gap-2 opacity-0 group-hover:opacity-100 transition">
+                    <a href="{{ route('categories.edit', $category) }}"
+                       class="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg bg-gray-50 hover:bg-indigo-50 text-gray-500 hover:text-indigo-600 transition">
+                        Edit
+                    </a>
+                    <form action="{{ route('categories.destroy', $category) }}" method="POST"
+                          onsubmit="return confirm('Hapus kategori ini?');" class="flex-1">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                                class="w-full text-xs font-semibold py-1.5 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-600 transition">
+                            Hapus
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @endforeach
+
+        {{-- Card "Lainnya" --}}
+        <a href="{{ route('categories.create') }}"
+           class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-5 flex flex-col items-center justify-center text-center hover:border-indigo-300 hover:bg-indigo-50/30 transition min-h-[148px]">
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center text-lg mb-3">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+            <p class="font-semibold text-gray-600 text-sm">Lainnya</p>
+            <p class="text-xs text-gray-400 mt-1">Buat kategori sendiri</p>
+        </a>
+    </div>
+
+    <div class="mt-6">
+        {{ $categories->links() }}
+    </div>
+
 @endsection

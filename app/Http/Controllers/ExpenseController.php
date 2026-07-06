@@ -22,38 +22,33 @@ class ExpenseController extends Controller
 
     public function create()
     {
-        $categories = Category::where('user_id', Auth::id())->get();
+        $categories = \App\Models\Category::where('user_id', auth()->id())
+        ->orWhere('is_default', true)
+        ->get();
 
-        return view('expense.create', compact('categories'));
+    return view('expense.create', compact('categories'));
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'category_id'  => 'required|exists:categories,id',
-            'expense_name' => 'required|string|max:255',
-            'amount'       => 'required|numeric|min:0',
-            'expense_date' => 'required|date',
-        ]);
+{
+    $validated = $request->validate([
+        'expense_name' => 'required|string|max:255',
+        'category_id'  => 'required|exists:categories,id', // Memastikan ID kategori valid
+        'amount'       => 'required|numeric|min:1',
+        'expense_date' => 'required|date',
+    ]);
 
-        // Cek apakah melebihi monthly_limit
-        $category     = Category::findOrFail($validated['category_id']);
-        $totalMonth   = Expense::where('category_id', $category->id)
-            ->whereMonth('expense_date', now()->month)
-            ->sum('amount');
-        $isOverLimit  = ($totalMonth + $validated['amount']) > $category->monthly_limit;
+    // Simpan data
+    \App\Models\Expense::create([
+        'user_id'      => auth()->id(),
+        'category_id'  => $validated['category_id'],
+        'expense_name' => $validated['expense_name'],
+        'amount'       => $validated['amount'],
+        'expense_date' => $validated['expense_date'],
+    ]);
 
-        Expense::create([
-            'user_id'      => Auth::id(),
-            'category_id'  => $validated['category_id'],
-            'expense_name' => $validated['expense_name'],
-            'amount'       => $validated['amount'],
-            'expense_date' => $validated['expense_date'],
-            'is_over_limit' => $isOverLimit,
-        ]);
-
-        return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil ditambahkan.');
-    }
+    return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil dicatat.');
+}
 
     public function show(Expense $expense)
     {
@@ -97,7 +92,7 @@ class ExpenseController extends Controller
             'is_over_limit' => $isOverLimit,
         ]);
 
-        return redirect()->route('expenses.index')->with('success', 'Pengeluaran berhasil diupdate.');
+        return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil diupdate.');
     }
 
     public function destroy(Expense $expense)

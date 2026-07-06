@@ -29,7 +29,10 @@ class ChallengeController extends Controller
 
     public function create()
     {
-        $categories = Category::where('user_id', Auth::id())->get();
+        // Mengambil kategori milik user login ATAU kategori bawaan sistem
+        $categories = Category::where('user_id', Auth::id())
+            ->orWhere('is_default', true)
+            ->get();
 
         return view('challenges.create', compact('categories'));
     }
