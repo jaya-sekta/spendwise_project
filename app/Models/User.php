@@ -18,10 +18,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-<<<<<<< HEAD
+
         'points',
-=======
->>>>>>> 3497b1b0449ac3de36406bec14c395d270bd056c
     ];
 
     protected $hidden = [
@@ -60,8 +58,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserReward::class);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 3497b1b0449ac3de36406bec14c395d270bd056c
