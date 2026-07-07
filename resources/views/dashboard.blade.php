@@ -72,80 +72,77 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <div class="lg:col-span-2 space-y-8">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-gray-800">Pengeluaran per Kategori</h3>
-                    <a href="{{ route('categories.index') }}" class="text-sm text-blue-600 hover:underline">Lihat Selengkapnya ></a>
-                </div>
-                <div class="flex flex-col md:flex-row items-center gap-8">
-                    <div class="w-48 h-48 relative mx-auto md:mx-0">
-                        <canvas id="expenseChart"></canvas>
-                    </div>
-                    
-                    <div class="flex-1 space-y-3 w-full">
-                        @if(isset($chartData) && count($chartData) > 0)
-                           @foreach($chartData as $data)
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-3 h-3 rounded-full"
-                                        style="background-color: {{ $data->category->color ?? '#3B82F6' }}"></div>
-                                    {{-- ✅ Fix: category_name bukan name --}}
-                                    <span class="text-sm text-gray-600">
-                                        {{ $data->category->category_name ?? 'Kategori' }}
-                                    </span>
-                                </div>
-                                <span class="text-sm font-semibold">
-                                    Rp {{ number_format($data->total, 0, ',', '.') }}
-                                </span>
-                            </div>
-                            @endforeach
-                        @else
-                            <p class="text-sm text-gray-400 italic text-center md:text-left">Belum ada data grafik bulan ini.</p>
-                        @endif
-                    </div>
-                </div>
-            </div>
+        <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+    <div class="flex justify-between items-center mb-5">
+        <h3 class="font-bold text-gray-800 text-base">Pengeluaran per Kategori</h3>
+        <a href="{{ route('expense.index') }}" class="text-sm text-indigo-600 hover:underline">
+            Lihat Selengkapnya >
+        </a>
+    </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-gray-800">Transaksi Terakhir</h3>
-                    <a href="{{ route('expense.index') }}" class="text-sm text-blue-600 hover:underline">Lihat Semua ></a>
-                </div>
-                <div class="space-y-4">
-                    @forelse($recentExpenses ?? [] as $expense)
-                    <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-xl transition">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white"
-                                style="background-color: {{ $expense->category->color ?? '#3B82F6' }}">
-                                <i class="{{ $expense->category->icon ?? 'fa-solid fa-receipt' }}"></i>
-                            </div>
-                            <div>
-                                {{-- ✅ Fix: expense_name bukan name --}}
-                                <p class="font-semibold text-gray-800 text-sm">{{ $expense->expense_name }}</p>
-                                {{-- ✅ Fix: category_name bukan name --}}
-                                <p class="text-xs text-gray-500">
-                                    {{ $expense->category->category_name ?? 'Tanpa Kategori' }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-gray-800 text-sm">
-                                Rp {{ number_format($expense->amount, 0, ',', '.') }}
-                            </p>
-                            <p class="text-xs text-gray-400">
-                                {{ $expense->expense_date->translatedFormat('d M Y') }}
-                            </p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center py-6">
-                        <p class="text-sm text-gray-400 italic">Belum ada transaksi pengeluaran terbaru.</p>
-                    </div>
-                @endforelse
-                </div>
-            </div>
-        </div>
+    <div class="relative" style="height: 280px;">
+        <canvas id="expenseByCategoryChart"></canvas>
+    </div>
+</div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('expenseByCategoryChart').getContext('2d');
+
+    const categoryLabels = {!! json_encode($categoryLabels ?? []) !!};
+    const categoryTotals = {!! json_encode($categoryTotals ?? []) !!};
+
+    const hasData = categoryTotals.length > 0 && categoryTotals.some(v => v > 0);
+
+    if (hasData) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Pengeluaran',
+                    data: categoryTotals,
+                    backgroundColor: '#6366f1',
+                    borderRadius: 8,
+                    maxBarThickness: 48,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp ' + value.toLocaleString('id-ID');
+                            }
+                        },
+                        grid: { color: '#f3f4f6' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    } else {
+        document.getElementById('expenseByCategoryChart').parentElement.innerHTML =
+            '<p class="text-gray-400 text-sm text-center flex items-center justify-center h-full">Belum ada data grafik bulan ini.</p>';
+    }
+</script>
+@endpush
 
         <div class="space-y-8">
             @if(isset($activeChallenge) && $activeChallenge)

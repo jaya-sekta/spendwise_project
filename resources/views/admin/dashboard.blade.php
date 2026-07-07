@@ -73,90 +73,50 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     
     <!-- Left Column (User Baru) -->
-    <div class="lg:col-span-2 space-y-8">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="font-bold text-gray-800">Pengguna Baru Terdaftar</h3>
-                <a href="#" class="text-sm text-blue-600 hover:underline">Lihat Semua User ></a>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-gray-100 text-sm text-gray-500">
-                            <th class="pb-3 font-medium">Nama User</th>
-                            <th class="pb-3 font-medium">Email</th>
-                            <th class="pb-3 font-medium">Tanggal Daftar</th>
-                            <th class="pb-3 font-medium text-right">Total Poin</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        @forelse($recentUsers ?? [] as $u)
-                        <tr class="border-b border-gray-50 hover:bg-slate-50 transition">
-                            <td class="py-3 font-semibold text-gray-800 flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
-                                    {{ substr($u->name, 0, 1) }}
-                                </div>
-                                {{ $u->name }}
-                            </td>
-                            <td class="py-3 text-gray-600">{{ $u->email }}</td>
-                            <td class="py-3 text-gray-500">{{ $u->created_at->format('d M Y') }}</td>
-                            <td class="py-3 font-bold text-yellow-500 text-right">{{ number_format($u->points ?? 0) }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="py-6 text-center text-gray-400 italic">Belum ada pengguna baru.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+   <div class="lg:col-span-3 bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden p-6">
+    <div class="flex justify-between items-center mb-5">
+        <h3 class="font-bold text-gray-800 text-base">Pengguna Baru Terdaftar</h3>
+        <a href="{{ route('admin.users.index') }}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition">
+            <i class="fa-solid fa-users text-[10px]"></i>
+            <span>Lihat Semua User</span>
+        </a>
     </div>
 
-    <!-- Right Column (Actionable Alerts) -->
-    <div class="space-y-8">
-        <!-- Warning: Low Stock Rewards -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden">
-            <div class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">Perhatian</div>
-            
-            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-triangle-exclamation text-red-500"></i> Stok Reward Menipis
-            </h3>
-            
-            <div class="space-y-4">
-                @forelse($lowStockRewards ?? [] as $rw)
-                <div class="flex justify-between items-center bg-red-50 p-3 rounded-xl border border-red-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0" 
-                             style="background-color: {{ $rw->color ?? '#EF4444' }}33; color: {{ $rw->color ?? '#EF4444' }}">
-                            <i class="{{ $rw->icon ?? 'fa-solid fa-gift' }}"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold text-gray-800 text-sm">{{ $rw->reward_name }}</p>
-                            <p class="text-xs text-gray-500">Butuh Restock</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="inline-block bg-red-200 text-red-700 text-xs font-bold px-2 py-1 rounded-md">
-                            Sisa: {{ $rw->stock }}
-                        </span>
-                    </div>
-                </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 border-b border-gray-100 text-gray-600 text-xs font-semibold uppercase">
+                    <th class="p-3 pl-4">Nama User</th>
+                    <th class="p-3">Email</th>
+                    <th class="p-3">Tanggal Daftar</th>
+                    <th class="p-3 text-right pr-4">Total Poin</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50 text-gray-700 text-sm">
+                @forelse($recentUsers as $u)
+                    <tr class="hover:bg-gray-50/50 transition">
+                        <td class="p-3 pl-4 font-medium text-gray-900 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 text-blue-600 font-bold flex items-center justify-center text-xs uppercase">
+                                {{ substr($u->name, 0, 2) }}
+                            </div>
+                            <span class="truncate max-w-[120px]">{{ $u->name }}</span>
+                        </td>
+                        <td class="p-3 text-gray-500 text-xs font-mono">{{ $u->email }}</td>
+                        <td class="p-3 text-gray-400 text-xs">
+                            {{ $u->created_at ? $u->created_at->format('d M Y') : '-' }}
+                        </td>
+                        <td class="p-3 font-semibold text-amber-500 text-right pr-4">⭐ {{ number_format($u->points ?? 0) }}</td>
+                    </tr>
                 @empty
-                <div class="py-4 text-center">
-                    <i class="fa-solid fa-box-check text-emerald-400 text-3xl mb-2"></i>
-                    <p class="text-sm text-gray-500">Semua stok reward dalam kondisi aman.</p>
-                </div>
+                    <tr>
+                        <td colspan="4" class="p-12 text-center text-gray-400 text-sm">
+                            Belum ada data pengguna baru terdaftar.
+                        </td>
+                    </tr>
                 @endforelse
-            </div>
-            
-            @if(count($lowStockRewards ?? []) > 0)
-                <a href="#" class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-xl transition mt-4">
-                    Kelola Stok Reward
-                </a>
-            @endif
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>    
 </div>
 @endsection

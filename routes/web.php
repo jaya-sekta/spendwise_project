@@ -12,7 +12,8 @@ use App\Http\Controllers\UserRewardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\RouteLogController;
-
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\RewardController as AdminRewardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,19 +48,30 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-
 // ==========================================
 // 2. ROUTE KHUSUS ADMIN
 // ==========================================
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 
+    // Dashboard Admin
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
+    // Kelola Kategori Bawaan
     Route::resource('categories', AdminCategoryController::class)
         ->except(['show'])
         ->names('admin.categories');
 
-    // ⬇️ Dipindahkan ke sini, sekarang terlindungi middleware auth + role:admin
+    // Kelola Pengguna — hanya route yang benar-benar dipakai
+    Route::resource('users', AdminUserController::class)
+        ->except(['create', 'store', 'show']) // registrasi user lewat auth biasa, bukan dari admin panel
+        ->names('admin.users');
+
+    // Kelola Reward / Hadiah (CRUD Admin)
+    Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('rewards', \App\Http\Controllers\Admin\RewardController::class);
+});
+
+    // Logger Aktivitas
     Route::get('/logActivity', [RouteLogController::class, 'index'])->name('admin.logger');
 
 });

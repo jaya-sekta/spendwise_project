@@ -15,8 +15,8 @@ class RewardController extends Controller
      */
     public function index()
     {
-        // Mengambil reward yang stoknya masih tersedia
-        $rewards = Reward::where('stock', '>', 0)->paginate(10);
+        $rewards = Reward::where('stock', '>', 0)
+            ->paginate(10);
 
         return view('rewards.index', compact('rewards'));
     }
@@ -26,7 +26,6 @@ class RewardController extends Controller
      */
     public function redeem(Request $request, Reward $reward)
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // 1. Cek stok reward
@@ -47,7 +46,7 @@ class RewardController extends Controller
             ]);
         }
 
-        // 3. Cek apakah poin user mencukupi
+        // 3. Cek apakah poin cukup
         if ($user->points < $reward->required_points) {
             return back()->withErrors([
                 'points' => 'Poin kamu tidak cukup untuk menukarkan reward ini.'
@@ -60,15 +59,15 @@ class RewardController extends Controller
         // 5. Kurangi stok reward
         $reward->decrement('stock');
 
-        // 6. Simpan riwayat penukaran ke database
+        // 6. Simpan riwayat penukaran
         UserReward::create([
             'user_id'         => $user->id,
             'reward_id'       => $reward->id,
             'redemption_date' => now(),
-            'voucher_code'    => strtoupper(Str::random(10)), // Membuat kode acak 10 karakter
+            'voucher_code'    => strtoupper(Str::random(10)),
         ]);
 
-        // 7. Redirect ke halaman riwayat dengan pesan sukses
+        // 7. Redirect ke halaman riwayat
         return redirect()
             ->route('user-rewards.index')
             ->with('success', 'Reward berhasil ditukarkan.');

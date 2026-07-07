@@ -5,18 +5,22 @@
 @section('content')
 
 <div class="mb-8 flex justify-between items-center">
-
     <div>
         <h1 class="text-3xl font-bold text-gray-800">
-            Riwayat Reward 🎁
+            Riwayat Penukaran 🧾
         </h1>
 
         <p class="text-gray-500 mt-2">
-            Daftar reward yang sudah pernah kamu tukarkan.
+            Daftar reward yang sudah kamu tukarkan.
         </p>
     </div>
 
+    <a href="{{ route('rewards.index') }}"
+       class="bg-white border border-gray-200 text-gray-700 px-5 py-3 rounded-xl shadow-sm hover:bg-gray-50 transition">
+        ← Kembali ke Reward Store
+    </a>
 </div>
+
 
 @if(session('success'))
 
@@ -26,79 +30,87 @@
 
 @endif
 
-<div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
 
-<table class="w-full">
+@if($errors->any())
 
-<thead class="bg-gray-100">
+<div class="mb-5 bg-red-100 border border-red-300 text-red-700 rounded-xl px-5 py-3">
 
-<tr>
+    <ul>
 
-<th class="px-6 py-4 text-left">
-Reward
-</th>
+        @foreach($errors->all() as $error)
 
-<th class="px-6 py-4 text-left">
-Voucher
-</th>
+        <li>{{ $error }}</li>
 
-<th class="px-6 py-4 text-left">
-Tanggal
-</th>
+        @endforeach
 
-</tr>
+    </ul>
 
-</thead>
+</div>
 
-<tbody>
+@endif
 
-@forelse($userRewards as $reward)
 
-<tr class="border-t">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-<td class="px-6 py-4">
+@forelse($userRewards as $userReward)
 
-{{ $reward->reward->reward_name }}
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 px-6 py-5 {{ !$loop->last ? 'border-b border-gray-100' : '' }}">
 
-</td>
+        <div class="flex items-center gap-4">
 
-<td class="px-6 py-4">
+            <div class="text-3xl">
+                🎁
+            </div>
 
-<span class="font-mono bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg">
+            <div>
+                <h2 class="font-bold text-gray-800">
+                    {{ $userReward->reward->reward_name ?? 'Reward tidak ditemukan' }}
+                </h2>
 
-{{ $reward->voucher_code }}
+                <p class="text-sm text-gray-500 mt-1">
+                    Ditukar pada {{ $userReward->redemption_date->translatedFormat('d F Y') }}
+                </p>
+            </div>
 
-</span>
+        </div>
 
-</td>
+        <div class="flex items-center gap-3">
 
-<td class="px-6 py-4">
+            <span class="bg-indigo-50 text-indigo-600 text-xs font-semibold px-3 py-2 rounded-lg tracking-wide">
+                {{ $userReward->voucher_code }}
+            </span>
 
-{{ $reward->redemption_date->format('d M Y') }}
+            <span class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-2 rounded-lg">
+                Berhasil
+            </span>
 
-</td>
+        </div>
 
-</tr>
+    </div>
 
 @empty
 
-<tr>
+    <div class="p-10 text-center">
 
-<td colspan="3" class="text-center py-10 text-gray-500">
+        <h2 class="text-xl font-bold text-gray-800">
+            Belum ada riwayat penukaran.
+        </h2>
 
-Belum ada reward yang ditukarkan.
+        <p class="text-gray-500 mt-2">
+            Yuk tukarkan poin kamu dengan reward menarik.
+        </p>
 
-</td>
+        <a href="{{ route('rewards.index') }}"
+           class="inline-block mt-5 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition">
+            Lihat Reward
+        </a>
 
-</tr>
+    </div>
 
 @endforelse
 
-</tbody>
-
-</table>
-
 </div>
+
 
 <div class="mt-8">
 

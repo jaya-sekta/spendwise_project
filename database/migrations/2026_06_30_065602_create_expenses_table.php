@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('expense_name'); // expense_name STRING [cite: 53, 54]
             $table->integer('amount'); // amount INT [cite: 57, 58]
             $table->date('expense_date'); // expense_date DATE [cite: 63, 64]
-            $table->boolean('is_over_limit')->default(false); // is_over_limit BOOLEAN [cite: 70, 71]
+            $table->boolean('is_over_limit')->default(false); 
             $table->timestamps(); // created_at & updated_at TIMESTAMP [cite: 75, 76, 79, 80]
         });
     }

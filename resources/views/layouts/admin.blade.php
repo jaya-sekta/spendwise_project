@@ -51,7 +51,7 @@
     {{-- Section Kelola --}}
     <p class="sidebar-section">Kelola</p>
     
-    <a href="#" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm opacity-70 mb-1">
+    <a href="{{ route('admin.rewards.index') }}" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm opacity-70 mb-1">
         <i class="fa-solid fa-gift w-5"></i> Kelola Reward
     </a>
     

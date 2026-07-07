@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             CategorySeeder::class,
-            RewardSeeder::class, // Seeder reward Anda tetap aman di sini
+            RewardSeeder::class,
+            UserSeeder::class, // Seeder reward Anda tetap aman di sini
         ]);
     }
 }
